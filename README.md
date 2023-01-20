@@ -1,5 +1,6 @@
-# **Custom Memory Allocation Library**
+```html
 <h1 style="color: #58a6ff;">Custom Memory Allocation Library</h1>
+```
 ###### **Files:** nu_malloc.c, nu_malloc.h
 ###### **Author:** Waleed Gudah
 
