@@ -13,9 +13,11 @@
 		 `malloc`, `calloc`, `realloc`, and `free` in files `nu_malloc.c` and `nu_malloc.h` .
 
 ## **Usage**
-```css
 
-	To use the custom memory allocation functions, include the `nu_malloc.h` header file in your program and use the functions like you would use the standard library functions. The function prototypes are as follows:
+	To use the custom memory allocation functions, include the `nu_malloc.h` header file 
+	in your program and use the functions like you would use the standard library functions.
+	The function prototypes are as follows:
+```css
 
 	void* nu_malloc(size_t);
 	void* nu_calloc(size_t, size_t);
