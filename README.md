@@ -9,9 +9,11 @@
 
 ## **Description**
 
-		This is a custom implementation of the C standard library memory allocation functions `malloc`, `calloc`, `realloc`, and `free` in files `nu_malloc.c` and `nu_malloc.h` .
+		This is a custom implementation of the C standard library memory allocation functions
+		 `malloc`, `calloc`, `realloc`, and `free` in files `nu_malloc.c` and `nu_malloc.h` .
 
 ## **Usage**
+```css
 
 	To use the custom memory allocation functions, include the `nu_malloc.h` header file in your program and use the functions like you would use the standard library functions. The function prototypes are as follows:
 
@@ -19,7 +21,7 @@
 	void* nu_calloc(size_t, size_t);
 	void* nu_realloc(void*, size_t);
 	void nu_free(void*);
-
+```
 ## **Example**
 ```css
 
