@@ -1,3 +1,7 @@
+.highlight .c {
+  color: blue;
+}
+
 # **Custom Memory Allocation Library**
 ###### **Title:** Custom Memory Allocation Library
 ###### **Files:** nu_malloc.c, nu_malloc.h
@@ -17,6 +21,8 @@
 	void nu_free(void*);
 
 ## **Example**
+```css
+
 	#include "nu_malloc.h"
 
 	int main() {
@@ -26,7 +32,7 @@
 	nu_free(ptr);
 	return 0;
 	}
-
+```
 ## **Note**
 This is a sample code and is not recommended for production use. It is recommended to test it thoroughly before using it in production.
 
