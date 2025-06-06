@@ -80,6 +80,10 @@ void *nu_realloc (void *ptr, size_t size) {
 // Function to free allocated memory
 // Input: void* ptr - a pointer to the memory block to be freed
 void nu_free (void *ptr) {
+    /* If the pointer is NULL there is nothing to free */
+    if (ptr == NULL)
+        return;
+
     /* Pointer to the length of the memory block */
     size_t* plen = (size_t*)ptr;
     /* Decrement the pointer to reach the top of the memory block */
