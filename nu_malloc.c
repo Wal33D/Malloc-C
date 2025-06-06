@@ -3,6 +3,7 @@
 #include <sys/mman.h>
 #include <stdint.h>
 #include "nu_malloc.h"
+#include <errno.h>
 
 // Function to allocate memory
 // Input: size_t size - the size of the memory block to be allocated
@@ -10,15 +11,20 @@
 void *nu_malloc (size_t size) {
     /* Pointer to hold the length of the allocated memory */
     size_t* plen;
-    /* 
+    /*
     Add sizeof(size_t) for holding length
     */
+    if (size > SIZE_MAX - sizeof(size_t)) {
+        errno = ENOMEM;
+        return NULL;
+    }
     size_t len = size + sizeof(size_t);
 
     /* Allocate memory using mmap */
     plen = mmap(0, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
     /* Check if mmap failed */
     if (plen == MAP_FAILED) {
+        errno = ENOMEM;
         return NULL;
     }
 
