@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include "nu_malloc.h"
 
 // Function to allocate memory
@@ -33,7 +34,12 @@ void *nu_malloc (size_t size) {
 // Input: size_t count - the number of elements to be allocated
 // Input: size_t eltsize - the size of each element
 // Output: void* - a pointer to the allocated and cleared memory block
+// Returns NULL if multiplying count and eltsize would overflow SIZE_MAX
 void *nu_calloc (size_t count, size_t eltsize) {
+    /* Ensure multiplication does not overflow */
+    if (eltsize != 0 && count > SIZE_MAX / eltsize)
+        return NULL;
+
     /* Calculate the total size needed */
     size_t size = count * eltsize;
     /* Allocate memory */
