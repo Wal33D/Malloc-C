@@ -48,7 +48,7 @@ If you want to contribute to this project, please feel free to open a pull reque
 
 ## **License**
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the [MIT License](LICENSE).
 
 
 
