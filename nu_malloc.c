@@ -23,7 +23,7 @@ void *nu_malloc (size_t size) {
         return NULL;
     }
 
-    /* Store the length of allocated memory in the first 4 bytes */
+    /* Store the length of allocated memory in the first sizeof(size_t) bytes */
     *plen = len;                   
 
     /* Return a pointer to the memory after the length variable */
