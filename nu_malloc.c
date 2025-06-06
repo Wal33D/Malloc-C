@@ -54,6 +54,8 @@ void *nu_realloc (void *ptr, size_t size) {
     plen--;
     /* Read the length of the original memory block */
     size_t len = *plen;
+    /* The actual payload size of the old block */
+    size_t old_size = len - sizeof(size_t);
     /* Allocate new memory */
     void* newptr = nu_malloc (size);
     /* Check if allocation was successful */
@@ -62,7 +64,7 @@ void *nu_realloc (void *ptr, size_t size) {
     }
     /* Copy data from the original memory block to the new one
     Use the minimum of the new size and the old size to ensure no memory overflow */
-    size_t min_size = (size < len) ? size : len;
+    size_t min_size = (size < old_size) ? size : old_size;
     memcpy (newptr, ptr, min_size);
     /* Free the original memory block */
     nu_free (ptr);
