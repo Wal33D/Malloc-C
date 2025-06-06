@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <stdbool.h>
+#include "nu_malloc.h"
 
 // Function to allocate memory
 // Input: size_t size - the size of the memory block to be allocated
@@ -78,8 +79,7 @@ void *nu_realloc (void *ptr, size_t size) {
 
 // Function to free allocated memory
 // Input: void* ptr - a pointer to the memory block to be freed
-// Output: bool - true if the memory is freed successfully, false otherwise
-bool nu_free (void *ptr) {
+void nu_free (void *ptr) {
     /* Pointer to the length of the memory block */
     size_t* plen = (size_t*)ptr;
     /* Decrement the pointer to reach the top of the memory block */
@@ -87,6 +87,5 @@ bool nu_free (void *ptr) {
     /* Read the length of the memory block */
     size_t len = *plen;
     /* Free the memory using munmap */
-    int result = munmap((void*)plen, len);
-    return (result == 0) ? true : false;
+    munmap((void*)plen, len);
 }
