@@ -15,4 +15,13 @@ nu_malloc.o: nu_malloc.c nu_malloc.h
 clean:
 	rm -f example *.o
 
-.PHONY: all clean
+test: example
+	@echo "Running example..." && \
+	output=`./example` && \
+	if [ "$$output" = "Value: 42" ]; then \
+		echo "$$output"; \
+	else \
+		echo "Unexpected output: $$output"; exit 1; \
+	fi
+
+.PHONY: all clean test
