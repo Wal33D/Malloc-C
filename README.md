@@ -1,7 +1,6 @@
 # **Custom Memory Allocation Library**
 ###### **Title:** Custom Memory Allocation Library
 ###### **Files:** nu_malloc.c, nu_malloc.h
-###### **Author:** Waleed Gudah
 
 ## **Description**
 
@@ -53,9 +52,6 @@ This is a sample code and is not recommended for production use. It is recommend
 
 ## **Compatibility**
 The code is compatible with C programming language and should work with most systems that support the `mmap` system call.
-
-## **Author**
-Waleed Gudah
 
 ## **Contributing**
 
