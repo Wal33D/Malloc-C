@@ -1,16 +1,18 @@
-// Included for the `size_t` type. 
+// Included for the `size_t` type.
 #include <string.h>
+#include <sys/mman.h>
+#include <stdbool.h>
 
 // Function to allocate memory
 // Input: size_t size - the size of the memory block to be allocated
 // Output: void* - a pointer to the allocated memory block
 void *nu_malloc (size_t size) {
     /* Pointer to hold the length of the allocated memory */
-    int* plen;
+    size_t* plen;
     /* 
-    Add sizeof(size) for holding length 
+    Add sizeof(size_t) for holding length
     */
-    int len = size + sizeof(size); 
+    size_t len = size + sizeof(size_t);
 
     /* Allocate memory using mmap */
     plen = mmap(0, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
@@ -47,11 +49,11 @@ void *nu_realloc (void *ptr, size_t size) {
         return nu_malloc(size);
     }
     /* Pointer to the length of the original memory block */
-    int* plen = (int*)ptr;
+    size_t* plen = (size_t*)ptr;
     /* Decrement the pointer to reach the top of the memory block */
     plen--;
     /* Read the length of the original memory block */
-    int len = *plen;
+    size_t len = *plen;
     /* Allocate new memory */
     void* newptr = nu_malloc (size);
     /* Check if allocation was successful */
@@ -73,11 +75,11 @@ void *nu_realloc (void *ptr, size_t size) {
 // Output: bool - true if the memory is freed successfully, false otherwise
 bool nu_free (void *ptr) {
     /* Pointer to the length of the memory block */
-    int* plen = (int*)ptr;
+    size_t* plen = (size_t*)ptr;
     /* Decrement the pointer to reach the top of the memory block */
     plen--;
     /* Read the length of the memory block */
-    int len = *plen;
+    size_t len = *plen;
     /* Free the memory using munmap */
     int result = munmap((void*)plen, len);
     return (result == 0) ? true : false;
