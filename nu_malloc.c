@@ -1,7 +1,6 @@
 // Included for the `size_t` type.
 #include <string.h>
 #include <sys/mman.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include "nu_malloc.h"
 
