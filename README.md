@@ -12,7 +12,7 @@
 	To use the custom memory allocation functions, include the `nu_malloc.h` header file 
 	in your program and use the functions like you would use the standard library functions.
 	The function prototypes are as follows:
-```css
+```c
 
 	void* nu_malloc(size_t);
 	void* nu_calloc(size_t, size_t);
@@ -20,7 +20,7 @@
 	void nu_free(void*);
 ```
 ## **Example**
-```css
+```c
 
 	#include "nu_malloc.h"
 
