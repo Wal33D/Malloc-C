@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stddef.h>
+#include <errno.h>
 #include "nu_malloc.h"
 
 int main(void) {
@@ -83,6 +84,42 @@ int main(void) {
 
     /* Ensure nu_free(NULL) is safe (should do nothing) */
     nu_free(NULL);
+
+#ifdef _POSIX_VERSION
+    /* Test failure paths with a huge allocation to trigger mmap error */
+    size_t huge = SIZE_MAX / 2; /* size large enough to fail */
+    errno = 0;
+    void *too_big = nu_malloc(huge);
+    if (too_big != NULL) {
+        fprintf(stderr, "nu_malloc unexpectedly succeeded on huge allocation\n");
+        nu_free(too_big);
+        return 1;
+    }
+    if (errno != ENOMEM) {
+        fprintf(stderr, "nu_malloc did not set ENOMEM on failure\n");
+        return 1;
+    }
+
+    int *temp = (int *)nu_malloc(sizeof(int));
+    if (!temp) {
+        perror("nu_malloc for realloc test");
+        return 1;
+    }
+    errno = 0;
+    int *temp2 = (int *)nu_realloc(temp, huge);
+    if (temp2 != NULL) {
+        fprintf(stderr, "nu_realloc unexpectedly succeeded on huge allocation\n");
+        nu_free(temp2);
+        return 1;
+    }
+    if (errno != ENOMEM) {
+        fprintf(stderr, "nu_realloc did not set ENOMEM on failure\n");
+        nu_free(temp);
+        return 1;
+    }
+    /* original pointer should still be valid */
+    nu_free(temp);
+#endif
 
     printf("All tests passed\n");
     return 0;
