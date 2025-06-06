@@ -1,0 +1,16 @@
+# Ignore build artifacts
+example
+memory_test
+*.o
+
+# Temporary files
+*~
+*.swp
+*.tmp
+*.log
+.DS_Store
+
+# C and build system outputs
+*.out
+*.a
+*.so
