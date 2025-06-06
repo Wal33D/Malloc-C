@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stddef.h>
+#include <limits.h>
+#include <stdint.h>
+#include <errno.h>
 #include "nu_malloc.h"
 
 int main(void) {
@@ -80,6 +83,24 @@ int main(void) {
         return 1;
     }
     nu_free(ptr);
+
+    /* Test allocation of zero bytes */
+    void *zero = nu_malloc(0);
+    if (!zero) {
+        perror("nu_malloc 0");
+        return 1;
+    }
+    /* freeing should be safe even for size 0 allocations */
+    nu_free(zero);
+
+    /* Test allocation failure for extremely large size */
+    errno = 0;
+    void *too_big = nu_malloc(SIZE_MAX);
+    if (too_big != NULL || errno != ENOMEM) {
+        fprintf(stderr, "nu_malloc SIZE_MAX should fail with ENOMEM\n");
+        nu_free(too_big);
+        return 1;
+    }
 
     /* Ensure nu_free(NULL) is safe (should do nothing) */
     nu_free(NULL);
