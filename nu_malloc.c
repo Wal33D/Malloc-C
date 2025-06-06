@@ -16,6 +16,10 @@ void *nu_malloc (size_t size) {
 
     /* Allocate memory using mmap */
     plen = mmap(0, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+    /* Check if mmap failed */
+    if (plen == MAP_FAILED) {
+        return NULL;
+    }
 
     /* Store the length of allocated memory in the first 4 bytes */
     *plen = len;                   
