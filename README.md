@@ -34,14 +34,29 @@
 ```
 ## **Building**
 
-A simple `Makefile` is included for compiling the provided `example.c` program against `nu_malloc.c`.
+A simple `Makefile` is included. The project uses `mmap` and `munmap` on POSIX
+systems. When `_POSIX_VERSION` is not defined (for example on Windows), the code
+falls back to the standard `malloc` family.
+
+### POSIX systems
 
 ```
 make
-./example
 ```
 
-To compile manually without `make`:
+This compiles `example` and `memory_test`. Run `make test` to execute the test
+suite.
+
+### Non‑POSIX systems
+
+The same command works because the source automatically switches to
+`malloc`/`realloc`/`free` when `mmap` is unavailable.
+
+```
+make
+```
+
+To compile manually without `make` on any platform:
 
 ```
 gcc -std=c11 example.c nu_malloc.c -o example
@@ -49,7 +64,7 @@ gcc -std=c11 example.c nu_malloc.c -o example
 
 ### Testing
 
-Run the `test_example.sh` script to build `example` and verify its output:
+You can either run `make test` or invoke the helper script directly:
 
 ```
 ./test_example.sh
@@ -61,7 +76,10 @@ The script expects the program to print `Value: 42`.
 This is a sample code and is not recommended for production use. It is recommended to test it thoroughly before using it in production.
 
 ## **Compatibility**
-The code is compatible with C programming language and should work with most systems that support the `mmap` system call.
+The library is written in standard C. On POSIX systems it depends on
+`mmap`/`munmap` from `<sys/mman.h>`. When those calls are unavailable the
+implementation falls back to the standard memory functions, so it can also be
+used on non‑POSIX platforms.
 
 ## **Contributing**
 
