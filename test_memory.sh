@@ -1,7 +1,8 @@
 #!/bin/sh
 set -e
 
-# Build the memory_test program
+# Build the memory_test program from a clean state
+make clean > /dev/null
 make memory_test > /dev/null
 
 # Run the program and capture its output
