@@ -33,6 +33,21 @@
 	return 0;
 	}
 ```
+## **Building**
+
+A simple `Makefile` is included for compiling the provided `example.c` program against `nu_malloc.c`.
+
+```
+make
+./example
+```
+
+To compile manually without `make`:
+
+```
+gcc -std=c11 example.c nu_malloc.c -o example
+```
+
 ## **Note**
 This is a sample code and is not recommended for production use. It is recommended to test it thoroughly before using it in production.
 
