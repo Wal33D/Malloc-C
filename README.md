@@ -47,6 +47,16 @@ To compile manually without `make`:
 gcc -std=c11 example.c nu_malloc.c -o example
 ```
 
+### Testing
+
+Run the `test_example.sh` script to build `example` and verify its output:
+
+```
+./test_example.sh
+```
+
+The script expects the program to print `Value: 42`.
+
 ## **Note**
 This is a sample code and is not recommended for production use. It is recommended to test it thoroughly before using it in production.
 
