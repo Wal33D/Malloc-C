@@ -28,7 +28,6 @@ void *nu_malloc (size_t size) {
 #ifdef _POSIX_VERSION
     plen = mmap(0, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
     if (plen == MAP_FAILED) {
-        errno = ENOMEM;
         return NULL;
     }
 #else

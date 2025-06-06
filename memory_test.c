@@ -3,6 +3,9 @@
 #include <limits.h>
 #include <stdint.h>
 #include <errno.h>
+#ifdef _POSIX_VERSION
+#include <sys/resource.h>
+#endif
 #include "nu_malloc.h"
 
 int main(void) {
@@ -101,6 +104,45 @@ int main(void) {
         nu_free(too_big);
         return 1;
     }
+
+#ifdef _POSIX_VERSION
+    /* Simulate mmap failure by limiting address space */
+    struct rlimit orig_lim;
+    if (getrlimit(RLIMIT_AS, &orig_lim) != 0) {
+        perror("getrlimit");
+        return 1;
+    }
+    struct rlimit low_lim = {20 * 1024 * 1024, orig_lim.rlim_max};
+    if (setrlimit(RLIMIT_AS, &low_lim) != 0) {
+        perror("setrlimit");
+        return 1;
+    }
+
+    errno = 0;
+    void *mmap_fail = nu_malloc(64 * 1024 * 1024);
+    if (mmap_fail != NULL || errno != ENOMEM) {
+        fprintf(stderr, "nu_malloc RLIMIT_AS should fail with ENOMEM\n");
+        nu_free(mmap_fail);
+        return 1;
+    }
+
+    void *tmp = nu_malloc(1024);
+    if (!tmp) {
+        perror("nu_malloc tmp");
+        return 1;
+    }
+    errno = 0;
+    void *grow_fail = nu_realloc(tmp, 64 * 1024 * 1024);
+    if (grow_fail != NULL || errno != ENOMEM) {
+        fprintf(stderr, "nu_realloc RLIMIT_AS should fail with ENOMEM\n");
+        nu_free(tmp);
+        nu_free(grow_fail);
+        return 1;
+    }
+    nu_free(tmp);
+    /* restore original limit */
+    setrlimit(RLIMIT_AS, &orig_lim);
+#endif
 
     /* Ensure nu_free(NULL) is safe (should do nothing) */
     nu_free(NULL);
