@@ -1,6 +1,10 @@
 // Included for the `size_t` type.
 #include <string.h>
+#ifdef _POSIX_VERSION
 #include <sys/mman.h>
+#else
+#include <stdlib.h>
+#endif
 #include <stdint.h>
 #include "nu_malloc.h"
 #include <errno.h>
@@ -20,13 +24,19 @@ void *nu_malloc (size_t size) {
     }
     size_t len = size + sizeof(size_t);
 
-    /* Allocate memory using mmap */
+    /* Allocate memory */
+#ifdef _POSIX_VERSION
     plen = mmap(0, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-    /* Check if mmap failed */
     if (plen == MAP_FAILED) {
         errno = ENOMEM;
         return NULL;
     }
+#else
+    plen = (size_t*)malloc(len);
+    if (plen == NULL) {
+        return NULL;
+    }
+#endif
 
     /* Store the length of allocated memory in the first sizeof(size_t) bytes */
     *plen = len;                   
@@ -68,24 +78,36 @@ void *nu_realloc (void *ptr, size_t size) {
     size_t* plen = (size_t*)ptr;
     /* Decrement the pointer to reach the top of the memory block */
     plen--;
+#ifdef _POSIX_VERSION
     /* Read the length of the original memory block */
     size_t len = *plen;
-    /* The actual payload size of the old block */
     size_t old_size = len - sizeof(size_t);
+#else
+    (void)*plen;
+#endif
+#ifdef _POSIX_VERSION
     /* Allocate new memory */
     void* newptr = nu_malloc (size);
-    /* Check if allocation was successful */
     if (newptr == NULL) {
         return NULL;
     }
-    /* Copy data from the original memory block to the new one
-    Use the minimum of the new size and the old size to ensure no memory overflow */
     size_t min_size = (size < old_size) ? size : old_size;
     memcpy (newptr, ptr, min_size);
-    /* Free the original memory block */
     nu_free (ptr);
-    /* Return a pointer to the new memory block */
     return newptr;
+#else
+    if (size > SIZE_MAX - sizeof(size_t)) {
+        errno = ENOMEM;
+        return NULL;
+    }
+    size_t new_len = size + sizeof(size_t);
+    size_t* newbase = realloc(plen, new_len);
+    if (newbase == NULL) {
+        return NULL;
+    }
+    *newbase = new_len;
+    return (void*)(&newbase[1]);
+#endif
 }
 
 // Function to free allocated memory
@@ -100,7 +122,13 @@ void nu_free (void *ptr) {
     /* Decrement the pointer to reach the top of the memory block */
     plen--;
     /* Read the length of the memory block */
+#ifdef _POSIX_VERSION
     size_t len = *plen;
     /* Free the memory using munmap */
     munmap((void*)plen, len);
+#else
+    (void)*plen; /* suppress unused-variable warning */
+    /* Free the memory using the C library */
+    free((void*)plen);
+#endif
 }
