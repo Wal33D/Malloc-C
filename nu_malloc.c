@@ -1,4 +1,6 @@
-// <stddef.h> defines size_t; <string.h> provides memcpy and memset or memset_s.
+
+/* MIT License - see LICENSE file for details */
+// <stddef.h> defines size_t; <string.h> provides memcpy and memset.
 #include <stddef.h>
 // Request optional bounds-checking interfaces (memset_s)
 #define __STDC_WANT_LIB_EXT1__ 1
