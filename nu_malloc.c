@@ -1,4 +1,5 @@
-// Included for the `size_t` type.
+// <stddef.h> defines size_t; <string.h> provides memcpy and memset.
+#include <stddef.h>
 #include <string.h>
 #ifdef _POSIX_VERSION
 #include <sys/mman.h>
