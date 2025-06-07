@@ -1,3 +1,5 @@
+/* MIT License - see LICENSE file for details */
+
 // <stddef.h> defines size_t; <string.h> provides memcpy and memset.
 #include <stddef.h>
 #include <string.h>
