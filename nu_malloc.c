@@ -1,7 +1,9 @@
-/* MIT License - see LICENSE file for details */
 
+/* MIT License - see LICENSE file for details */
 // <stddef.h> defines size_t; <string.h> provides memcpy and memset.
 #include <stddef.h>
+// Request optional bounds-checking interfaces (memset_s)
+#define __STDC_WANT_LIB_EXT1__ 1
 #include <string.h>
 #ifdef _POSIX_VERSION
 #include <sys/mman.h>
@@ -62,8 +64,13 @@ void *nu_calloc (size_t count, size_t eltsize) {
     /* Allocate memory */
     void *value = nu_malloc (size);
     /* Clear the memory */
-    if (value != 0)
-        memset (value, 0, size);
+    if (value != 0) {
+#ifdef __STDC_LIB_EXT1__
+        memset_s(value, size, 0, size);
+#else
+        memset(value, 0, size);
+#endif
+    }
     return value;
 }
 
