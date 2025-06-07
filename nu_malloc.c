@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #endif
 #include <stdint.h>
+#include <stdalign.h>
+
+#define NU_ALIGN alignof(max_align_t)
+#define HEADER_SIZE ((sizeof(size_t) + NU_ALIGN - 1) & ~(NU_ALIGN - 1))
 #include "nu_malloc.h"
 #include <errno.h>
 
@@ -18,16 +22,14 @@
 // Input: size_t size - the size of the memory block to be allocated
 // Output: void* - a pointer to the allocated memory block
 void *nu_malloc (size_t size) {
-    /* Pointer to hold the length of the allocated memory */
+    /* Pointer to hold the start of the allocated memory */
     size_t* plen;
-    /*
-    Add sizeof(size_t) for holding length
-    */
-    if (size > SIZE_MAX - sizeof(size_t)) {
+    /* Ensure we do not overflow when adding our header */
+    if (size > SIZE_MAX - HEADER_SIZE) {
         errno = ENOMEM;
         return NULL;
     }
-    size_t len = size + sizeof(size_t);
+    size_t len = size + HEADER_SIZE;
 
     /* Allocate memory */
 #ifdef _POSIX_VERSION
@@ -42,11 +44,11 @@ void *nu_malloc (size_t size) {
     }
 #endif
 
-    /* Store the length of allocated memory in the first sizeof(size_t) bytes */
-    *plen = len;                   
+    /* Store the length of allocated memory at the start */
+    *plen = len;
 
-    /* Return a pointer to the memory after the length variable */
-    return (void*)(&plen[1]);      
+    /* Return a pointer to the memory after the aligned header */
+    return (void*)((char*)plen + HEADER_SIZE);
 }
 
 // Function to allocate and clear memory
@@ -84,13 +86,11 @@ void *nu_realloc (void *ptr, size_t size) {
         return nu_malloc(size);
     }
     /* Pointer to the length of the original memory block */
-    size_t* plen = (size_t*)ptr;
-    /* Decrement the pointer to reach the top of the memory block */
-    plen--;
+    size_t* plen = (size_t*)((char*)ptr - HEADER_SIZE);
 #ifdef _POSIX_VERSION
     /* Read the length of the original memory block */
     size_t len = *plen;
-    size_t old_size = len - sizeof(size_t);
+    size_t old_size = len - HEADER_SIZE;
 #else
     (void)*plen;
 #endif
@@ -105,17 +105,17 @@ void *nu_realloc (void *ptr, size_t size) {
     nu_free (ptr);
     return newptr;
 #else
-    if (size > SIZE_MAX - sizeof(size_t)) {
+    if (size > SIZE_MAX - HEADER_SIZE) {
         errno = ENOMEM;
         return NULL;
     }
-    size_t new_len = size + sizeof(size_t);
+    size_t new_len = size + HEADER_SIZE;
     size_t* newbase = realloc(plen, new_len);
     if (newbase == NULL) {
         return NULL;
     }
     *newbase = new_len;
-    return (void*)(&newbase[1]);
+    return (void*)((char*)newbase + HEADER_SIZE);
 #endif
 }
 
@@ -127,9 +127,7 @@ void nu_free (void *ptr) {
         return;
 
     /* Pointer to the length of the memory block */
-    size_t* plen = (size_t*)ptr;
-    /* Decrement the pointer to reach the top of the memory block */
-    plen--;
+    size_t* plen = (size_t*)((char*)ptr - HEADER_SIZE);
     /* Read the length of the memory block */
 #ifdef _POSIX_VERSION
     size_t len = *plen;
