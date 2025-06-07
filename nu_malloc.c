@@ -7,6 +7,12 @@
 #include <string.h>
 #ifdef _POSIX_VERSION
 #include <sys/mman.h>
+/* Some BSD variants use MAP_ANON instead of MAP_ANONYMOUS */
+#ifndef MAP_ANONYMOUS
+#ifdef MAP_ANON
+#define MAP_ANONYMOUS MAP_ANON
+#endif
+#endif
 #else
 #include <stdlib.h>
 #endif
@@ -40,6 +46,7 @@ void *nu_malloc (size_t size) {
 #else
     plen = (size_t*)malloc(len);
     if (plen == NULL) {
+        errno = ENOMEM;
         return NULL;
     }
 #endif
@@ -112,6 +119,7 @@ void *nu_realloc (void *ptr, size_t size) {
     size_t new_len = size + HEADER_SIZE;
     size_t* newbase = realloc(plen, new_len);
     if (newbase == NULL) {
+        errno = ENOMEM;
         return NULL;
     }
     *newbase = new_len;

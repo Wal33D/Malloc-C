@@ -11,7 +11,9 @@ and `free` routines. The code lives in `nu_malloc.c` and its header
 ## Usage
 
 To use the custom memory functions, include `nu_malloc.h` in your program.
-Call its functions just like their standard library counterparts. The
+The header is C++ friendly and wraps the declarations in `extern "C"`
+when included from C++ code. Call the functions just like their standard
+library counterparts. The
 function prototypes are as follows:
 ```c
 
@@ -36,8 +38,9 @@ function prototypes are as follows:
 ## Building
 
 A simple `Makefile` is included. The project uses `mmap` and `munmap` on
-POSIX systems. When `_POSIX_VERSION` is undefined on Windows the code
-falls back to the standard `malloc` family.
+POSIX systems. When `_POSIX_VERSION` is undefined the code falls back to
+the standard `malloc` family. Both a static library (`libnu_malloc.a`)
+and a shared library (`libnu_malloc.so`) are produced.
 
 ### POSIX systems
 
@@ -68,6 +71,21 @@ To build just the static library:
 ```
 make libnu_malloc.a
 ```
+
+To build just the shared library:
+
+```
+make libnu_malloc.so
+```
+
+You can install the header and libraries with:
+
+```
+make install
+```
+
+The install location can be customized with `PREFIX`, `INCLUDEDIR` and
+`LIBDIR` variables. The defaults install into `/usr/local`.
 
 ### Windows (MinGW/MSVC)
 

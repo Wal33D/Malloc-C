@@ -126,6 +126,21 @@ int main(void) {
         return 1;
     }
 
+    int *small = (int *)nu_malloc(sizeof(int));
+    if (!small) {
+        perror("nu_malloc small");
+        return 1;
+    }
+    errno = 0;
+    void *realloc_fail = nu_realloc(small, SIZE_MAX);
+    if (realloc_fail != NULL || errno != ENOMEM) {
+        fprintf(stderr, "nu_realloc SIZE_MAX should fail with ENOMEM\n");
+        nu_free(realloc_fail);
+        nu_free(small);
+        return 1;
+    }
+    nu_free(small);
+
 #ifdef _POSIX_VERSION
     /* Simulate mmap failure by limiting address space */
     struct rlimit orig_lim;
