@@ -91,6 +91,19 @@ make install
 
 The install location can be customized with `PREFIX`, `INCLUDEDIR` and
 `LIBDIR` variables. The defaults install into `/usr/local`.
+### Using CMake
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+This will place `libnu_malloc.a`, `libnu_malloc.so`, `example` and `memory_test` inside the `build/` directory. To run the tests use:
+
+```sh
+cd build && ctest
+```
+
 
 ### Windows (MinGW/MSVC)
 
