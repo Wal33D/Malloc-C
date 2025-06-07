@@ -98,6 +98,12 @@ The install location can be customized with `PREFIX`, `INCLUDEDIR` and
 gcc src/example.c src/nu_malloc.c -Iinclude -o example.exe
 ```
 
+## Documentation
+
+A minimal `Doxyfile` is provided. Run `doxygen` from the project root
+to generate HTML documentation in `docs/html`. The configuration scans
+the `include/` and `src/` directories.
+
 ### Testing
 
 You can either run `make test` or invoke the helper script directly:

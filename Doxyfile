@@ -1,0 +1,6 @@
+# Minimal Doxygen configuration
+PROJECT_NAME = "nu_malloc"
+OUTPUT_DIRECTORY = docs
+INPUT = include src README.md
+RECURSIVE = YES
+GENERATE_LATEX = NO
