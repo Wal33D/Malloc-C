@@ -44,7 +44,7 @@ falls back to the standard `malloc` family.
 make
 ```
 
-This compiles `example` and `memory_test`. Run `make test` to execute the test suite.
+This compiles `example`, `memory_test`, and `libnu_malloc.a`. Run `make test` to execute the test suite.
 
 ### Non‑POSIX systems
 
@@ -59,6 +59,12 @@ To compile manually without `make` on any platform:
 
 ```
 gcc -std=c11 example.c nu_malloc.c -o example
+```
+
+To build just the static library:
+
+```
+make libnu_malloc.a
 ```
 
 ### Testing
