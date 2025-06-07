@@ -1,6 +1,5 @@
 # Ignore build artifacts
-example
-memory_test
+build/
 *.o
 
 # Temporary files

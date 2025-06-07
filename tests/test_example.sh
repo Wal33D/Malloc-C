@@ -5,11 +5,11 @@ if (set -o pipefail) 2>/dev/null; then
     set -o pipefail
 fi
 
-# Build the example program
-make example > /dev/null
+# Determine the path to the built executable
+exe="${1:-./build/example}"
 
 # Run the program and capture its output
-output=$(./example)
+output=$("$exe")
 
 if [ "$output" = "Value: 42" ]; then
     echo "Test passed: $output"

@@ -5,12 +5,11 @@ if (set -o pipefail) 2>/dev/null; then
     set -o pipefail
 fi
 
-# Build the memory_test program from a clean state
-make clean > /dev/null
-make memory_test > /dev/null
+# Determine the path to the built test binary
+exe="${1:-./build/memory_test}"
 
 # Run the program and capture its output
-output=$(./memory_test)
+output=$("$exe")
 
 if [ "$output" = "All tests passed" ]; then
     echo "Memory tests passed: $output"
