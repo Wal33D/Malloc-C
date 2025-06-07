@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include <stdint.h>
+#include <stdalign.h>
 #include <errno.h>
 #ifdef _POSIX_VERSION
 #include <sys/resource.h>
@@ -65,6 +66,11 @@ int main(void) {
     int *value = (int *)nu_malloc(sizeof(int));
     if (!value) {
         perror("nu_malloc");
+        return 1;
+    }
+    if (((uintptr_t)value % alignof(max_align_t)) != 0) {
+        fprintf(stderr, "nu_malloc returned misaligned pointer\n");
+        nu_free(value);
         return 1;
     }
     *value = 7;
