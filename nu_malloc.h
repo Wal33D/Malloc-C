@@ -1,3 +1,4 @@
+/* MIT License - see LICENSE file for details */
 #ifndef NU_MALLOC_H
 #define NU_MALLOC_H
 

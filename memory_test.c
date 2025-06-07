@@ -1,3 +1,4 @@
+/* MIT License - see LICENSE file for details */
 #include <stdio.h>
 #include <stddef.h>
 #include <limits.h>
