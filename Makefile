@@ -1,5 +1,5 @@
 # Build settings
-CC ?= gcc
+CC = gcc
 CFLAGS ?= -std=c11 -Wall -Wextra -pedantic -fPIC -Iinclude
 AR ?= ar
 PREFIX ?= /usr/local
