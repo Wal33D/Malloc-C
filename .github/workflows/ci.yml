@@ -23,7 +23,9 @@ jobs:
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             brew install shellcheck
           elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            choco install -y shellcheck
+            choco install -y shellcheck make mingw
+            echo "C:\\tools\\mingw64\\bin" >> "$GITHUB_PATH"
+            echo "C:\\ProgramData\\chocolatey\\lib\\make\\tools\\GnuWin32\\bin" >> "$GITHUB_PATH"
           fi
       - name: Lint Shell Scripts
         run: shellcheck tests/*.sh
