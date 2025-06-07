@@ -105,6 +105,12 @@ cd build && ctest
 ```
 
 
+You can remove the installed files with:
+
+```
+make uninstall
+```
+
 ### Windows (MinGW/MSVC)
 
 ```sh
