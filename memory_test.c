@@ -87,6 +87,19 @@ int main(void) {
     }
     nu_free(ptr);
 
+    /* Test nu_realloc called with size 0 on an existing block */
+    int *zero_ptr = (int *)nu_malloc(sizeof(int));
+    if (!zero_ptr) {
+        perror("nu_malloc for zero realloc");
+        return 1;
+    }
+    *zero_ptr = 456;
+    void *zero_result = nu_realloc(zero_ptr, 0);
+    /* Either NULL or a pointer valid for nu_free is acceptable */
+    if (zero_result != NULL) {
+        nu_free(zero_result);
+    }
+
     /* Test allocation of zero bytes */
     void *zero = nu_malloc(0);
     if (!zero) {
