@@ -4,13 +4,13 @@
 
 ## Description
 
-This is a custom implementation of the C standard library memory allocation functions
-`malloc`, `calloc`, `realloc`, and `free` in files `nu_malloc.c` and `nu_malloc.h`.
+This project re-implements the standard `malloc`, `calloc`, `realloc` and `free` routines.
+The code lives in `nu_malloc.c` and its header `nu_malloc.h`.
 
 ## Usage
 
-To use the custom memory allocation functions, include the `nu_malloc.h` header file
-in your program and use the functions like you would use the standard library functions.
+To use the custom memory functions, include `nu_malloc.h` in your program.
+Call its functions just like their standard library counterparts.
 The function prototypes are as follows:
 ```c
 
@@ -34,9 +34,8 @@ The function prototypes are as follows:
 ```
 ## Building
 
-A simple `Makefile` is included. The project uses `mmap` and `munmap` on POSIX
-systems. When `_POSIX_VERSION` is not defined (for example on Windows), the code
-falls back to the standard `malloc` family.
+A simple `Makefile` is included. The project uses `mmap` and `munmap` on POSIX systems.
+When `_POSIX_VERSION` is undefined on Windows the code falls back to the standard `malloc` family.
 
 ### POSIX systems
 
@@ -44,12 +43,12 @@ falls back to the standard `malloc` family.
 make
 ```
 
-This compiles `example`, `memory_test`, and `libnu_malloc.a`. Run `make test` to execute the test suite.
+This compiles `example`, `memory_test` and `libnu_malloc.a`. Run `make test` to run the suite.
 
 ### Non‑POSIX systems
 
-The same command works because the source automatically switches to
-`malloc`/`realloc`/`free` when `mmap` is unavailable.
+The same command works because the source automatically switches to `malloc`/`realloc`/`free`.
+It does so when `mmap` is unavailable.
 
 ```
 make
@@ -67,6 +66,12 @@ To build just the static library:
 make libnu_malloc.a
 ```
 
+### Windows (MinGW/MSVC)
+
+```sh
+gcc example.c nu_malloc.c -o example.exe
+```
+
 ### Testing
 
 You can either run `make test` or invoke the helper script directly:
@@ -75,20 +80,20 @@ You can either run `make test` or invoke the helper script directly:
 ./test_example.sh
 ```
 
-The script expects the program to print `Value: 42`.
+The script expects the program to print `Value: 42` and requires a POSIX shell.
+It isn't supported on Windows unless you run it inside such an environment.
 
 ## Note
-This is a sample code and is not recommended for production use. It is recommended to test it thoroughly before using it in production.
+This sample code is not recommended for production use. Test it thoroughly before deploying.
 
 ## Compatibility
-The library is written in standard C. On POSIX systems it depends on
-`mmap`/`munmap` from `<sys/mman.h>`. When those calls are unavailable the
-implementation falls back to the standard memory functions, so it can also be
-used on non‑POSIX platforms.
+The library is written in standard C and uses `mmap`/`munmap` from `<sys/mman.h>` when available.
+When `mmap` is unavailable the implementation falls back to the standard memory functions.
+This allows the library to work on non‑POSIX platforms.
 
 ## Contributing
 
-If you want to contribute to this project, please feel free to open a pull request or issue on GitHub.
+If you want to contribute to this project, feel free to open a pull request or issue on GitHub.
 
 ## License
 
