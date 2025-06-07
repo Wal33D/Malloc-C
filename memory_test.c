@@ -33,7 +33,8 @@ int main(void) {
     int *bigger = (int *)nu_realloc(arr, bigger_n * sizeof(int));
     if (!bigger) {
         perror("nu_realloc");
-        nu_free(arr); /* arr already freed on failure? but we call anyway */
+        /* nu_realloc does not free the original block on failure */
+        nu_free(arr);
         return 1;
     }
     for (size_t i = 0; i < n; i++) {
