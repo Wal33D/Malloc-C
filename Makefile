@@ -1,7 +1,8 @@
 CC ?= gcc
 CFLAGS ?= -std=c11 -Wall -Wextra -pedantic
+AR ?= ar
 
-all: example memory_test
+all: libnu_malloc.a example memory_test
 
 example: example.o nu_malloc.o
 	$(CC) $(CFLAGS) -o $@ example.o nu_malloc.o
@@ -18,6 +19,8 @@ memory_test.o: memory_test.c nu_malloc.h
 nu_malloc.o: nu_malloc.c nu_malloc.h
 	$(CC) $(CFLAGS) -c nu_malloc.c
 
+libnu_malloc.a: nu_malloc.o
+	$(AR) rcs $@ nu_malloc.o
 clean:
 	rm -f example memory_test *.o
 
