@@ -58,4 +58,9 @@ install: $(LIB_STATIC) $(LIB_SHARED)
 	install -m 644 $(LIB_STATIC) $(DESTDIR)$(LIBDIR)/
 	install -m 755 $(LIB_SHARED) $(DESTDIR)$(LIBDIR)/
 
-.PHONY: all clean test install
+uninstall:
+	rm -f $(DESTDIR)$(INCLUDEDIR)/nu_malloc.h
+	rm -f $(DESTDIR)$(LIBDIR)/libnu_malloc.a
+	rm -f $(DESTDIR)$(LIBDIR)/libnu_malloc.so
+
+.PHONY: all clean test install uninstall

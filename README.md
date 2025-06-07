@@ -92,6 +92,12 @@ make install
 The install location can be customized with `PREFIX`, `INCLUDEDIR` and
 `LIBDIR` variables. The defaults install into `/usr/local`.
 
+You can remove the installed files with:
+
+```
+make uninstall
+```
+
 ### Windows (MinGW/MSVC)
 
 ```sh
