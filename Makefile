@@ -22,7 +22,7 @@ nu_malloc.o: nu_malloc.c nu_malloc.h
 libnu_malloc.a: nu_malloc.o
 	$(AR) rcs $@ nu_malloc.o
 clean:
-	rm -f example memory_test *.o
+	rm -f example memory_test libnu_malloc.a *.o
 
 test: example memory_test
 	@./test_example.sh
