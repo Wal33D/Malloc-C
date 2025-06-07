@@ -1,44 +1,61 @@
+# Build settings
 CC ?= gcc
-CFLAGS ?= -std=c11 -Wall -Wextra -pedantic -fPIC
+CFLAGS ?= -std=c11 -Wall -Wextra -pedantic -fPIC -Iinclude
 AR ?= ar
 PREFIX ?= /usr/local
 INCLUDEDIR ?= $(PREFIX)/include
 LIBDIR ?= $(PREFIX)/lib
+BUILD_DIR ?= build
+SRC_DIR := src
+TEST_DIR := tests
 
-all: libnu_malloc.a libnu_malloc.so example memory_test
+LIB_STATIC := $(BUILD_DIR)/libnu_malloc.a
+LIB_SHARED := $(BUILD_DIR)/libnu_malloc.so
+EXAMPLE := $(BUILD_DIR)/example
+MEM_TEST := $(BUILD_DIR)/memory_test
 
-example: example.o nu_malloc.o
-	$(CC) $(CFLAGS) -o $@ example.o nu_malloc.o
+OBJS := $(BUILD_DIR)/nu_malloc.o
+EXAMPLE_OBJ := $(BUILD_DIR)/example.o
+MEM_TEST_OBJ := $(BUILD_DIR)/memory_test.o
 
-memory_test: memory_test.o nu_malloc.o
-	$(CC) $(CFLAGS) -o $@ memory_test.o nu_malloc.o
+all: $(LIB_STATIC) $(LIB_SHARED) $(EXAMPLE) $(MEM_TEST)
 
-example.o: example.c nu_malloc.h
-	$(CC) $(CFLAGS) -c example.c
+$(BUILD_DIR):
+	mkdir -p $@
 
-memory_test.o: memory_test.c nu_malloc.h
-	$(CC) $(CFLAGS) -c memory_test.c
+$(EXAMPLE): $(EXAMPLE_OBJ) $(OBJS) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -o $@ $(EXAMPLE_OBJ) $(OBJS)
 
-nu_malloc.o: nu_malloc.c nu_malloc.h
-	$(CC) $(CFLAGS) -c nu_malloc.c
+$(MEM_TEST): $(MEM_TEST_OBJ) $(OBJS) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -o $@ $(MEM_TEST_OBJ) $(OBJS)
 
-libnu_malloc.a: nu_malloc.o
-	        $(AR) rcs $@ nu_malloc.o
+$(EXAMPLE_OBJ): $(SRC_DIR)/example.c include/nu_malloc.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-libnu_malloc.so: nu_malloc.o
-	$(CC) $(CFLAGS) -shared -o $@ nu_malloc.o
+$(MEM_TEST_OBJ): $(TEST_DIR)/memory_test.c include/nu_malloc.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/nu_malloc.o: $(SRC_DIR)/nu_malloc.c include/nu_malloc.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIB_STATIC): $(BUILD_DIR)/nu_malloc.o | $(BUILD_DIR)
+	$(AR) rcs $@ $(BUILD_DIR)/nu_malloc.o
+
+$(LIB_SHARED): $(BUILD_DIR)/nu_malloc.o | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -shared -o $@ $(BUILD_DIR)/nu_malloc.o
+
 clean:
-	rm -f example memory_test libnu_malloc.a libnu_malloc.so *.o
+	rm -rf $(BUILD_DIR)
 
-test: example memory_test
-	@./test_example.sh
-	@./test_memory.sh
+test: $(EXAMPLE) $(MEM_TEST)
+	@$(TEST_DIR)/test_example.sh ./$(EXAMPLE)
+	@$(TEST_DIR)/test_memory.sh ./$(MEM_TEST)
 
-install: libnu_malloc.a libnu_malloc.so
+install: $(LIB_STATIC) $(LIB_SHARED)
 	install -d $(DESTDIR)$(INCLUDEDIR)
-	install -m 644 nu_malloc.h $(DESTDIR)$(INCLUDEDIR)/
+	install -m 644 include/nu_malloc.h $(DESTDIR)$(INCLUDEDIR)/
 	install -d $(DESTDIR)$(LIBDIR)
-	install -m 644 libnu_malloc.a $(DESTDIR)$(LIBDIR)/
-	install -m 755 libnu_malloc.so $(DESTDIR)$(LIBDIR)/
+	install -m 644 $(LIB_STATIC) $(DESTDIR)$(LIBDIR)/
+	install -m 755 $(LIB_SHARED) $(DESTDIR)$(LIBDIR)/
 
 .PHONY: all clean test install

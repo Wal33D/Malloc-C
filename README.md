@@ -1,12 +1,16 @@
 # Custom Memory Allocation Library
-### Title: Custom Memory Allocation Library
-### Files: nu_malloc.c, nu_malloc.h
 
 ## Description
 
 This project re-implements the standard `malloc`, `calloc`, `realloc`
-and `free` routines. The code lives in `nu_malloc.c` and its header
-`nu_malloc.h`.
+and `free` routines. The implementation lives in `src/nu_malloc.c`
+with its public header in `include/nu_malloc.h`.
+
+### Project layout
+
+- `src/` ‑ library and example sources
+- `include/` ‑ public headers
+- `tests/` ‑ unit tests and helper scripts
 
 ## Usage
 
@@ -48,8 +52,9 @@ and a shared library (`libnu_malloc.so`) are produced.
 make
 ```
 
-This compiles `example`, `memory_test` and `libnu_malloc.a`. Run `make`
-test to run the suite.
+This compiles the example program, the test binary and the
+`libnu_malloc.a` library into the `build/` directory. Run `make test` to
+execute the test suite.
 
 ### Non‑POSIX systems
 
@@ -63,7 +68,7 @@ make
 To compile manually without `make` on any platform:
 
 ```
-gcc -std=c11 example.c nu_malloc.c -o example
+gcc -std=c11 src/example.c src/nu_malloc.c -Iinclude -o example
 ```
 
 To build just the static library:
@@ -90,7 +95,7 @@ The install location can be customized with `PREFIX`, `INCLUDEDIR` and
 ### Windows (MinGW/MSVC)
 
 ```sh
-gcc example.c nu_malloc.c -o example.exe
+gcc src/example.c src/nu_malloc.c -Iinclude -o example.exe
 ```
 
 ### Testing
@@ -98,7 +103,7 @@ gcc example.c nu_malloc.c -o example.exe
 You can either run `make test` or invoke the helper script directly:
 
 ```
-./test_example.sh
+./tests/test_example.sh
 ```
 
 The script expects the program to print `Value: 42` and requires a POSIX
